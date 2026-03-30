@@ -1,4 +1,5 @@
 import math
+import pandas as pd
 
 coefficient_of_friction = 0.7 #Adjust accordingly
 coefficient_of_gravity = 9.81
@@ -74,14 +75,14 @@ def solve_straight(length, v_entry, v_exit_limit):
 #Will change for the user so that they are able to customize and make their own straights and corners
 def build_track():
     track = [
-        {"type": "straight", "length": S1_length}, 
-        {"type": "corner", "radius": C1_radius, "angle": degree_90},
-        {"type": "corner", "radius": C2_radius, "angle": degree_90},
-        {"type": "corner", "radius" : C3_radius, "angle" : degree_90},
-        {"type": "straight", "length": S2_length},
-        {"type": "corner", "radius": C4_radius, "angle": degree_90},
-        {"type": "straight", "length": S3_length},
-        {"type": "corner", "radius": C5_radius, "angle": degree_90}
+        {"type": "straight", "length": S1_length, "name": "S1"}, 
+        {"type": "corner", "radius": C1_radius, "angle": degree_90, "name": "C1"},
+        {"type": "corner", "radius": C2_radius, "angle": degree_90, "name": "C2"},
+        {"type": "corner", "radius" : C3_radius, "angle" : degree_90, "name": "C3"},
+        {"type": "straight", "length": S2_length, "name": "S2"},
+        {"type": "corner", "radius": C4_radius, "angle": degree_90, "name": "C4"},
+        {"type": "straight", "length": S3_length, "name": "S3"},
+        {"type": "corner", "radius": C5_radius, "angle": degree_90, "name": "C5"}
 
     ]
     return track
@@ -89,10 +90,6 @@ def build_track():
 def compute_track_time(track):
     v_current = 0
     total_time = 0
-    all_segment_times = []
-    all_corner_times = [] #Debug
-    all_straight_times = [] #Debug
-    all_segment_velocity = []
 
     for i in range(len(track)):
         segment = track[i]
@@ -108,27 +105,77 @@ def compute_track_time(track):
             segment_time, segment_velocity = solve_for_corner(segment["radius"], segment["angle"])
             total_time += segment_time
             v_current = segment_velocity
-            all_corner_times.append(segment_time)
-            all_segment_times.append(segment_time)
-            all_segment_velocity.append(segment_velocity)
         else:
             v_exit_limit = corner_max_speed(next_segment["radius"])
             segment_time, segment_velocity = solve_straight(segment["length"], v_current, v_exit_limit)
             total_time += segment_time
             v_current = segment_velocity
-            all_straight_times.append(segment_time)
-            all_segment_times.append(segment_time)
-            all_segment_velocity.append(segment_velocity)
 
-        print("Hello World")
         return total_time
     
+def create_segment_time_dict(track):
+    v_current = 0
+    all_segment_times = {}
+
+    for i in range(len(track)):
+        segment = track[i]
+        next_segment = track[(i + 1) % len(track)]
+
+        if next_segment["type"] == "corner":
+            v_exit_limit = corner_max_speed(next_segment["radius"])
+        else:
+            # no constraint (no upcoming corner)
+            v_exit_limit = float('inf')
+
+        if segment["type"] == "corner":
+            segment_time, segment_velocity = solve_for_corner(segment["radius"], segment["angle"])
+            v_current = segment_velocity
+            all_segment_times[segment["name"]] = segment_time
+        else:
+            v_exit_limit = corner_max_speed(next_segment["radius"])
+            segment_time, segment_velocity = solve_straight(segment["length"], v_current, v_exit_limit)
+            v_current = segment_velocity
+            all_segment_times[segment["name"]] = segment_time
+        
+def create_segment_time_dict(track):
+    v_current = 0
+    all_segment_times = {}
+
+    for i in range(len(track)):
+        segment = track[i]
+        next_segment = track[(i + 1) % len(track)]
+
+        if next_segment["type"] == "corner":
+            v_exit_limit = corner_max_speed(next_segment["radius"])
+        else:
+            # no constraint (no upcoming corner)
+            v_exit_limit = float('inf')
+
+        if segment["type"] == "corner":
+            segment_time, segment_velocity = solve_for_corner(segment["radius"], segment["angle"])
+            v_current = segment_velocity
+            all_segment_times[segment["name"]] = segment_time
+        else:
+            v_exit_limit = corner_max_speed(next_segment["radius"])
+            segment_time, segment_velocity = solve_straight(segment["length"], v_current, v_exit_limit)
+            v_current = segment_velocity
+            all_segment_times[segment["name"]] = segment_time
+        
+    print(all_segment_times)
+
+
+    return all_segment_times
     
-    print(f"{total_time:.4f}")
-    print(all_corner_times)
-    print(all_straight_times)
-    # print(all_segment_times)
-    # print(all_segment_velocity)
+
+def clean_segment_values(segment_time_list):
+    updated_segment_time_list = [f"{x:.3f}" for x in segment_time_list]
+    return updated_segment_time_list
+    
+# def print_results(segment_times, total_time):
+#     updated_time_list = clean_segment_values(segment_times)
+#     for time 
+
+    
 
 #This is a test for the repo
 def main():
@@ -136,7 +183,7 @@ def main():
     # Your main program logic goes here
     print("This code runs when the script is executed directly.")
     a = build_track()
-    compute_track_time(a)
+    create_segment_time_dict(a)
 
 
 
