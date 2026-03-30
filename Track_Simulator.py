@@ -111,31 +111,8 @@ def compute_track_time(track):
             total_time += segment_time
             v_current = segment_velocity
 
-        return total_time
+    return total_time
     
-def create_segment_time_dict(track):
-    v_current = 0
-    all_segment_times = {}
-
-    for i in range(len(track)):
-        segment = track[i]
-        next_segment = track[(i + 1) % len(track)]
-
-        if next_segment["type"] == "corner":
-            v_exit_limit = corner_max_speed(next_segment["radius"])
-        else:
-            # no constraint (no upcoming corner)
-            v_exit_limit = float('inf')
-
-        if segment["type"] == "corner":
-            segment_time, segment_velocity = solve_for_corner(segment["radius"], segment["angle"])
-            v_current = segment_velocity
-            all_segment_times[segment["name"]] = segment_time
-        else:
-            v_exit_limit = corner_max_speed(next_segment["radius"])
-            segment_time, segment_velocity = solve_straight(segment["length"], v_current, v_exit_limit)
-            v_current = segment_velocity
-            all_segment_times[segment["name"]] = segment_time
         
 def create_segment_time_dict(track):
     v_current = 0
@@ -161,19 +138,22 @@ def create_segment_time_dict(track):
             v_current = segment_velocity
             all_segment_times[segment["name"]] = segment_time
         
-    print(all_segment_times)
-
+    # print(all_segment_times) # Debug code
 
     return all_segment_times
     
-
-def clean_segment_values(segment_time_list):
-    updated_segment_time_list = [f"{x:.3f}" for x in segment_time_list]
-    return updated_segment_time_list
+#Might not need this
+# def clean_segment_values(segment_time_list):
+#     updated_segment_time_list = [f"{x:.3f}" for x in segment_time_list]
+#     return updated_segment_time_list
     
-# def print_results(segment_times, total_time):
-#     updated_time_list = clean_segment_values(segment_times)
-#     for time 
+def print_results(segment_times, total_time):
+    labels = list(segment_times.keys()) + ["Total"]
+    values = list(segment_times.values()) + [total_time]
+
+    print("      | " + "  ".join(f"{l:>6}" for l in labels))
+    print("-" * (8 + len(labels) * 8))
+    print("Time  | " + "  ".join(f"{v:6.2f}" for v in values))
 
     
 
@@ -183,7 +163,10 @@ def main():
     # Your main program logic goes here
     print("This code runs when the script is executed directly.")
     a = build_track()
-    create_segment_time_dict(a)
+    test = create_segment_time_dict(a)
+    time = compute_track_time(a)
+    print_results(test, time)
+
 
 
 
