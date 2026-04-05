@@ -1,5 +1,6 @@
 import math
 import pandas as pd
+import Segment_Builder as segments
 
 coefficient_of_friction = 0.7 #Adjust accordingly
 coefficient_of_gravity = 9.81
@@ -162,10 +163,20 @@ def main():
     """Main function of the script."""
     # Your main program logic goes here
     print("This code runs when the script is executed directly.")
-    a = build_track()
-    test = create_segment_time_dict(a)
-    time = compute_track_time(a)
-    print_results(test, time)
+    test = []
+    # a = build_track()
+    # test = create_segment_time_dict(a)
+    # time = compute_track_time(a)
+    # print_results(test, time)
+    c1 = segments.Straight(100, name="S1")
+    c2 = segments.Corner(50, 90, name="C1")
+    test.append(c1.to_dict())
+    test.append(c2.to_dict())
+    aga = create_segment_time_dict(test)
+    time = compute_track_time(test)
+    print_results(aga, time)
+    # print(test)
+
 
 
 
