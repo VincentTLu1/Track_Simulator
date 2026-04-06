@@ -1,7 +1,8 @@
 import Track_Simulator
 import customtkinter as ctk
 
-app = ctk.CTk()
-app.geometry("600x400")
+#Current user window for tinkering with the GUI file
+u_app = ctk.CTk()
+u_app.geometry("600x400")
 
-app.mainloop()
+u_app.mainloop()
