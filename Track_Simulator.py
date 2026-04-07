@@ -183,9 +183,9 @@ def pick_angle(angle):
     if angle == "90":
         selected_angle = degree_90
     elif angle == "180":
-        selected_angle == degree_180
+        selected_angle = degree_180
     else:
-        selected_angle == degree_360
+        selected_angle = degree_360
     return selected_angle
         
 
