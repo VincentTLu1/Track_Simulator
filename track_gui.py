@@ -1,5 +1,6 @@
 import Track_Simulator
 import customtkinter as ctk
+from CTkMessagebox import CTkMessagebox
 
 #global track_list
 track = []
@@ -9,7 +10,16 @@ u_app = ctk.CTk()
 u_app.geometry("600x400")
 
 def add_track_straight():
-    length = float(length_input.get())
+    value = length_input.get()
+
+    if value == "":
+        CTkMessagebox(title="Warning", message="Please enter a length!", icon="info")
+        length_input.focus()
+        return
+    
+    length = float(value)
+
+    length_input.delete(0, "end")
 
     segment = {
         "type": "straight",
@@ -21,13 +31,34 @@ def add_track_straight():
     update_display()
     print(track)
 
-    print("Straight length: " + length)
+    print("Straight length: " + str(length))
     print("Straight added")
 
 def add_track_corner():
-    length = float(length_input.get())
-    radius = float(radius_input.get())
+    length_value = length_input.get()
+    # length = float(length_input.get())
+    if length_value == "":
+        CTkMessagebox(title="Warning", message="Please enter a length!", icon="info")
+        length_input.focus()
+        return
+    
+    length = float(length_value)
+
+    length_input.delete(0, "end")
+
+
+    # radius = float(radius_input.get())
+    radius_value = radius_input.get()
+    if radius_value == "":
+        CTkMessagebox(title="Warning", message="Please enter a radius!", icon="info")
+        radius_input.focus()
+        return
+    
+    radius = float(radius_value)
+
+    radius_input.delete(0, "end")
     string_angle = angle_input.get()
+    angle_input.delete(0, "end")
     picked_angle = Track_Simulator.pick_angle(string_angle)
     
 
@@ -42,7 +73,7 @@ def add_track_corner():
     update_display()
     print(track)
 
-    print("Corner length: " + length)
+    print("Corner length: " + str(length))
     print("Corner added")
 
 straight_button = ctk.CTkButton(u_app, text="Add Straight", command=add_track_straight)
@@ -77,5 +108,16 @@ def update_display():
             text = f'{segment["name"]}: Corner r={segment["radius"]}\n'
 
         display.insert("end", text)
+
+#Function to display the total time logic
+def compute_time():
+    total_time = Track_Simulator.compute_track_time(track)
+    result_label.configure(text=f"Total Time: {total_time:.2f}")
+
+result_label = ctk.CTkLabel(u_app, text="Total Time:")
+result_label.pack()
+
+compute_button = ctk.CTkButton(u_app, text="Compute Time", command=compute_time)
+compute_button.pack()
 
 u_app.mainloop()
