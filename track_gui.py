@@ -1,6 +1,7 @@
 import Track_Simulator
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
+from tkinter import ttk
 
 #global track_list
 track = []
@@ -94,20 +95,43 @@ angle_input.pack()
 # angle_option = ctk.CTkOptionMenu(u_app, values=["90", "180", "360"])
 # angle_option.pack()
 
-display = ctk.CTkTextbox(u_app, width=400, height=200)
-display.pack()
+#Textbox (Commented out)
+# display = ctk.CTkTextbox(u_app, width=400, height=200)
+# display.pack()
 
-#Function for display logic
+table_frame = ctk.CTkFrame(u_app)
+table_frame.pack(pady=10)
+
+tree = ttk.Treeview(table_frame, columns=("Name", "Type", "Value"), show="headings")
+
+tree.heading("Name", text="Name")
+tree.heading("Type", text="Type")
+tree.heading("Value", text="Value")
+
+tree.column("Name", anchor="center", width=80)
+tree.column("Type", anchor="center", width=100)
+tree.column("Value", anchor="center", width=150)
+
+tree.pack()
+
+
 def update_display():
-    display.delete("0.0", "end")
+    # clear table
+    for row in tree.get_children():
+        tree.delete(row)
 
+    # refill table
     for segment in track:
         if segment["type"] == "straight":
-            text = f'{segment["name"]}: Straight {segment["length"]}\n'
+            value = f'Length: {segment["length"]}'
         else:
-            text = f'{segment["name"]}: Corner r={segment["radius"]}\n'
+            value = f'R={segment["radius"]}, A={segment["angle"]}'
 
-        display.insert("end", text)
+        tree.insert("", "end", values=(
+            segment["name"],
+            segment["type"],
+            value
+        ))
 
 #Function to display the total time logic
 def compute_time():
