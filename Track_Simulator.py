@@ -105,14 +105,16 @@ def compute_track_time(track):
             v_exit_limit = float('inf')
 
         if segment["type"] == "corner":
-            segment_time, segment_velocity = solve_for_corner(segment["radius"], segment["angle"])
-            total_time += segment_time
-            v_current = segment_velocity
+            segment_time, segment_velocity = solve_for_corner(
+                segment["radius"], segment["angle"]
+            )
         else:
-            v_exit_limit = corner_max_speed(next_segment["radius"])
-            segment_time, segment_velocity = solve_straight(segment["length"], v_current, v_exit_limit)
-            total_time += segment_time
-            v_current = segment_velocity
+            segment_time, segment_velocity = solve_straight(
+                segment["length"], v_current, v_exit_limit
+            )
+
+        total_time += segment_time
+        v_current = segment_velocity
 
     return total_time
     

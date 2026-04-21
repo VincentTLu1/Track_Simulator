@@ -36,17 +36,6 @@ def add_track_straight():
     print("Straight added")
 
 def add_track_corner():
-    length_value = length_input.get()
-    # length = float(length_input.get())
-    if length_value == "":
-        CTkMessagebox(title="Warning", message="Please enter a length!", icon="info")
-        length_input.focus()
-        return
-    
-    length = float(length_value)
-
-    length_input.delete(0, "end")
-
 
     # radius = float(radius_input.get())
     radius_value = radius_input.get()
@@ -74,7 +63,6 @@ def add_track_corner():
     update_display()
     print(track)
 
-    print("Corner length: " + str(length))
     print("Corner added")
 
 straight_button = ctk.CTkButton(u_app, text="Add Straight", command=add_track_straight)
@@ -92,12 +80,6 @@ radius_input.pack()
 angle_input = ctk.CTkEntry(u_app, placeholder_text="Enter angle here")
 angle_input.pack()
 
-# angle_option = ctk.CTkOptionMenu(u_app, values=["90", "180", "360"])
-# angle_option.pack()
-
-#Textbox (Commented out)
-# display = ctk.CTkTextbox(u_app, width=400, height=200)
-# display.pack()
 
 table_frame = ctk.CTkFrame(u_app)
 table_frame.pack(pady=10)
@@ -114,7 +96,7 @@ tree.column("Value", anchor="center", width=150)
 
 tree.pack()
 
-
+# Updates the display with the 
 def update_display():
     # clear table
     for row in tree.get_children():
@@ -138,8 +120,30 @@ def compute_time():
     total_time = Track_Simulator.compute_track_time(track)
     result_label.configure(text=f"Total Time: {total_time:.2f}")
 
+# Function to clear the contents in the display table
+def clear_track():
+    confirm = CTkMessagebox(
+        title="Confirm",
+        message="Are you sure you want to clear the track?",
+        icon="warning",
+        option_1="Yes",
+        option_2="No"
+    )
+
+    if confirm.get() != "Yes":
+        return
+
+    track.clear()
+    update_display()
+    result_label.configure(text="Total Time:")
+    print("Track cleared!")
+
+
 result_label = ctk.CTkLabel(u_app, text="Total Time:")
 result_label.pack()
+
+clear_button = ctk.CTkButton(u_app, text="Clear Track", command=clear_track)
+clear_button.pack()
 
 compute_button = ctk.CTkButton(u_app, text="Compute Time", command=compute_time)
 compute_button.pack()
