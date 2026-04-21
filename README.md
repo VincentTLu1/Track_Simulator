@@ -17,7 +17,7 @@ This is a Python based GUI-based application that simulates a custom track. User
 ## Project Application
 Let's explore a use case for this track simulator using a real-world example: The Indianapolis Motor Speedway!
 - https://www.nascar.com/news-media/2021/08/11/indianapolis-motor-speedway-road-course-turn-by-turn-analysis/
-This project is applicable in the Indy 500 due to the nature of the course such as the straights, corners, and velocity constraints.
+- This project is applicable in the Indy 500 due to the nature of the course such as the straights, corners, and velocity constraints.
 
 ## Project Example
 - For the nature of this example, the angles and lengths will be arbitrary; however, the course structure will reimain the same.
